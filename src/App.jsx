@@ -25,7 +25,6 @@ const HeroManager = lazy(() => import('./pages/admin/HeroManager'));
 const CategoryManager = lazy(() => import('./pages/admin/CategoryManager'));
 const ProductManager = lazy(() => import('./pages/admin/ProductManager'));
 const OrderManager = lazy(() => import('./pages/admin/OrderManager'));
-const QuotationManager = lazy(() => import('./pages/admin/QuotationManager'));
 const CreateQuotation = lazy(() => import('./pages/admin/CreateQuotation'));
 
 function App() {
@@ -91,7 +90,6 @@ function App() {
                 <Route path="categories" element={<CategoryManager />} />
                 <Route path="products" element={<ProductManager />} />
                 <Route path="orders" element={<OrderManager />} />
-                <Route path="quotations" element={<QuotationManager />} />
                 <Route path="quotations/create/:orderId" element={<CreateQuotation />} />
               </Route>
             </Routes>

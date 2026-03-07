@@ -18,10 +18,12 @@ const STATUS_COLORS = {
 export default function OrderManager() {
     const { data: orders, loading: ordersLoading } = useCollection('orders');
     const { data: users, loading: usersLoading } = useCollection('users');
+    const { data: replies, loading: repliesLoading } = useCollection('replies');
     const [sortBy, setSortBy] = useState('date-desc');
     const [statusFilter, setStatusFilter] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [replyStatusFilter, setReplyStatusFilter] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
     const prevOrderCountRef = useRef(0);
@@ -117,6 +119,22 @@ export default function OrderManager() {
         });
     };
 
+    // Filtering & Sorting for Replies
+    const filteredReplies = replies
+        .filter(r => {
+            const matchesStatus = replyStatusFilter === 'All' || r.status === replyStatusFilter;
+            const matchesSearch = !searchTerm ||
+                r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                r.fromEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                r.message?.toLowerCase().includes(searchTerm.toLowerCase());
+            return matchesStatus && matchesSearch;
+        })
+        .sort((a, b) => {
+            const t1 = a.createdAt?.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
+            const t2 = b.createdAt?.toMillis ? b.createdAt.toMillis() : new Date(b.createdAt).getTime();
+            return t2 - t1;
+        });
+
     if (ordersLoading || usersLoading) return <Loader className="py-20" />;
 
     // If an order is selected, show the Quotation View "as a page"
@@ -132,7 +150,7 @@ export default function OrderManager() {
         );
     }
 
-    const filterOptions = ['All', 'Pending', 'Quoted', 'Approved', 'Completed'];
+    const filterOptions = ['All', 'Pending', 'Quoted', 'Approved', 'Completed', 'Replies'];
 
     return (
         <div className="space-y-6">
@@ -203,7 +221,90 @@ export default function OrderManager() {
                 </div>
             </div>
 
-            {paginatedOrders.length === 0 ? (
+            {statusFilter === 'Replies' ? (
+                <div className="mt-8 space-y-4">
+                    <div className="bg-emerald-50/50 p-6 rounded-2xl border border-emerald-100/50 mb-8">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-emerald-100 text-emerald-600">
+                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 tracking-tight">Support Inbox</h3>
+                                    <p className="text-sm font-medium text-emerald-600">support@exportshub.in</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 bg-white/50 p-1 rounded-xl border border-emerald-100/50">
+                                {['All', 'Pending', 'Completed'].map(s => (
+                                    <button
+                                        key={s}
+                                        onClick={() => setReplyStatusFilter(s)}
+                                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${replyStatusFilter === s ? 'bg-emerald-600 text-white shadow-sm' : 'text-emerald-700 hover:bg-emerald-50'}`}
+                                    >
+                                        {s}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <span className="text-xs font-bold text-emerald-700 bg-white px-4 py-2 rounded-xl border border-emerald-100 shadow-sm uppercase tracking-wider">
+                                {filteredReplies.length} Messages
+                            </span>
+                        </div>
+                    </div>
+
+                    {repliesLoading ? (
+                        <div className="text-center py-20">
+                            <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mx-auto mb-4" />
+                            <p className="text-gray-500 font-medium">Loading inbox...</p>
+                        </div>
+                    ) : filteredReplies.length === 0 ? (
+                        <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-gray-200 shadow-sm">
+                            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                {searchTerm ? 'No matches found' : `No ${replyStatusFilter.toLowerCase()} messages`}
+                            </h3>
+                            <p className="text-gray-500 max-w-xs mx-auto">
+                                {searchTerm
+                                    ? `Adjust your search "${searchTerm}" or filter to find what you're looking for.`
+                                    : `Emails from support@exportshub.in filtered by ${replyStatusFilter} will appear here.`
+                                }
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-4">
+                            {filteredReplies.map(reply => (
+                                <div key={reply.id} className="bg-white rounded-2xl border border-black/5 shadow-sm hover:shadow-md transition-all duration-300 p-6 group">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                                                <p className="text-sm font-black text-gray-900 truncate uppercase tracking-tight">{reply.subject || 'No Subject'}</p>
+                                            </div>
+                                            <p className="text-xs font-bold text-emerald-700 mb-4">{reply.fromEmail}</p>
+                                            <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                                {reply.message}
+                                            </p>
+                                        </div>
+                                        <div className="text-right flex-shrink-0">
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{formatDate(reply.createdAt)}</p>
+                                            <button className="mt-4 px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-emerald-600">
+                                                REPLY NOW
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            ) : paginatedOrders.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200 text-gray-500 mt-12">
                     <p>No {statusFilter === 'All' ? '' : statusFilter.toLowerCase()} orders found matching your search</p>
                 </div>
@@ -290,7 +391,7 @@ export default function OrderManager() {
             )}
 
             {/* Pagination Footer */}
-            {filteredAndSortedOrders.length > itemsPerPage && (
+            {statusFilter !== 'Replies' && filteredAndSortedOrders.length > itemsPerPage && (
                 <div className="px-6 py-4 bg-white rounded-xl border border-black/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
                     <div className="text-sm text-gray-500">
                         Showing <span className="font-semibold text-gray-900">{startIndex + 1}</span> to <span className="font-semibold text-gray-900">{Math.min(startIndex + itemsPerPage, filteredAndSortedOrders.length)}</span> of <span className="font-semibold text-gray-900">{filteredAndSortedOrders.length}</span> orders
