@@ -5,6 +5,8 @@ import { db } from '../../firebase';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { PageLoader } from '../../components/common/Loader';
+import Skeleton from '../../components/common/Skeleton';
+import ImageWithFallback from '../../components/common/ImageWithFallback';
 import toast from 'react-hot-toast';
 
 export default function ProductDetail() {
@@ -16,6 +18,7 @@ export default function ProductDetail() {
     const [selectedUnit, setSelectedUnit] = useState('');
     const [quantity, setQuantity] = useState(1);
     const [activeImage, setActiveImage] = useState(0);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -70,31 +73,34 @@ export default function ProductDetail() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* Images */}
                 <div>
-                    <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                        {product.images?.length > 0 ? (
-                            <img
-                                src={product.images[activeImage]}
-                                alt={product.title}
-                                className="w-full h-full object-cover"
-                            />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                        )}
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4 relative">
+                        <ImageWithFallback
+                            src={product.images?.[activeImage]}
+                            alt={product.title}
+                            name={product.title}
+                            onLoad={() => setImageLoaded(true)}
+                            className={`w-full h-full object-cover transition-all duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        />
+                        {!imageLoaded && <Skeleton className="absolute inset-0 z-10 rounded-none w-full h-full" />}
                     </div>
                     {product.images?.length > 1 && (
                         <div className="flex gap-3 overflow-x-auto pb-2">
                             {product.images.map((img, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => setActiveImage(i)}
+                                    onClick={() => {
+                                        setActiveImage(i);
+                                        setImageLoaded(false);
+                                    }}
                                     className={`w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-colors ${i === activeImage ? 'border-emerald-600' : 'border-gray-200 hover:border-gray-300'
                                         }`}
                                 >
-                                    <img src={img} alt="" className="w-full h-full object-cover" />
+                                    <ImageWithFallback
+                                        src={img}
+                                        alt=""
+                                        name=""
+                                        className="w-full h-full object-cover"
+                                    />
                                 </button>
                             ))}
                         </div>
@@ -102,7 +108,7 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Info */}
-                <div>
+                <div className="flex flex-col">
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.title}</h1>
                     {product.description && (
                         <p className="text-gray-600 leading-relaxed mb-8">{product.description}</p>
@@ -110,16 +116,16 @@ export default function ProductDetail() {
 
                     {/* Unit Selection */}
                     {product.units?.length > 0 && (
-                        <div className="mb-6">
-                            <label className="block text-sm font-semibold text-gray-900 mb-3">Select Unit</label>
-                            <div className="flex flex-wrap gap-2">
+                        <div className="mb-8">
+                            <label className="block text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Select Unit</label>
+                            <div className="flex flex-wrap gap-3">
                                 {product.units.map(unit => (
                                     <button
                                         key={unit}
                                         onClick={() => setSelectedUnit(unit)}
-                                        className={`px-5 py-2.5 rounded-lg text-sm font-medium border transition-all ${selectedUnit === unit
-                                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
-                                            : 'bg-white text-gray-700 border-gray-300 hover:border-emerald-400'
+                                        className={`px-6 py-3 rounded-xl text-sm font-bold border transition-all ${selectedUnit === unit
+                                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-600/20'
+                                            : 'bg-white text-gray-700 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50/30'
                                             }`}
                                     >
                                         {unit}
@@ -130,12 +136,12 @@ export default function ProductDetail() {
                     )}
 
                     {/* Quantity */}
-                    <div className="mb-8">
-                        <label className="block text-sm font-semibold text-gray-900 mb-3">Quantity</label>
-                        <div className="flex items-center gap-3">
+                    <div className="mb-10">
+                        <label className="block text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Quantity</label>
+                        <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                                className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors"
+                                className="w-12 h-12 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
                             >
                                 −
                             </button>
@@ -144,11 +150,11 @@ export default function ProductDetail() {
                                 min="1"
                                 value={quantity}
                                 onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                className="w-20 text-center input-field"
+                                className="w-24 h-12 text-center text-lg font-bold border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
                             />
                             <button
                                 onClick={() => setQuantity(q => q + 1)}
-                                className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors"
+                                className="w-12 h-12 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
                             >
                                 +
                             </button>
@@ -156,12 +162,14 @@ export default function ProductDetail() {
                     </div>
 
                     {/* Add to Cart */}
-                    <button
-                        onClick={handleAddToCart}
-                        className="btn-primary w-full sm:w-auto text-base !py-3 !px-10"
-                    >
-                        {user ? 'Add to Cart' : 'Login to Add to Cart'}
-                    </button>
+                    <div className="mt-auto pt-6 border-t border-gray-100 sm:border-t-0 sm:pt-0">
+                        <button
+                            onClick={handleAddToCart}
+                            className="btn-primary w-full text-lg !py-4 !px-12 shadow-xl shadow-emerald-500/20"
+                        >
+                            {user ? 'Add to Cart' : 'Login to Add to Cart'}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

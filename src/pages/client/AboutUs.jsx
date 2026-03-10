@@ -35,7 +35,7 @@ const AboutUs = () => {
     return (
         <div className="bg-white min-h-screen">
             {/* Hero Section */}
-            <div className="relative py-20 overflow-hidden">
+            <div className="relative py-12 md:py-20 overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-emerald-50 rounded-l-[100px] -z-10 translate-x-20" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -79,7 +79,7 @@ const AboutUs = () => {
             </div>
 
             {/* Our Values */}
-            <div className="py-24 bg-gray-50">
+            <div className="py-16 md:py-24 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Core Principles that Drive Us</h2>
@@ -101,7 +101,7 @@ const AboutUs = () => {
             </div>
 
             {/* Mission Section */}
-            <div className="py-20">
+            <div className="py-12 md:py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="bg-emerald-900 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden text-white">
                         <div className="relative z-10 max-w-2xl">

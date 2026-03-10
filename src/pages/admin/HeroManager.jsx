@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import toast from 'react-hot-toast';
 import Loader from '../../components/common/Loader';
 import { HiOutlineTrash, HiOutlinePlus } from 'react-icons/hi';
+import DeleteConfirmation from '../../components/common/DeleteConfirmation';
+import ImageWithFallback from '../../components/common/ImageWithFallback';
 
 export default function HeroManager() {
     const [title, setTitle] = useState('');
@@ -13,6 +15,11 @@ export default function HeroManager() {
     const [imageFiles, setImageFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [deletedUrls, setDeletedUrls] = useState([]); // Track existing URLs to delete from storage on save
+
+    // Delete Confirmation State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteConfig, setDeleteConfig] = useState(null); // { type: 'existing' | 'new', index: number }
 
     useEffect(() => {
         const fetchHero = async () => {
@@ -40,12 +47,25 @@ export default function HeroManager() {
         setImageFiles(prev => [...prev, ...files]);
     };
 
-    const removeNewFile = (index) => {
-        setImageFiles(prev => prev.filter((_, i) => i !== index));
+    const handleDeleteClick = (type, index) => {
+        setDeleteConfig({ type, index });
+        setShowDeleteModal(true);
     };
 
-    const removeExistingImage = (index) => {
-        setImageUrls(prev => prev.filter((_, i) => i !== index));
+    const confirmDelete = () => {
+        if (!deleteConfig) return;
+        const { type, index } = deleteConfig;
+
+        if (type === 'existing') {
+            const urlToRemove = imageUrls[index];
+            setDeletedUrls(prev => [...prev, urlToRemove]);
+            setImageUrls(prev => prev.filter((_, i) => i !== index));
+        } else {
+            setImageFiles(prev => prev.filter((_, i) => i !== index));
+        }
+
+        setShowDeleteModal(false);
+        setDeleteConfig(null);
     };
 
     const handleSave = async (e) => {
@@ -78,6 +98,16 @@ export default function HeroManager() {
                 imageUrl: finalImageUrls[0] || ''
             });
 
+            // Delete removed images from storage
+            const deletePromises = deletedUrls.map(url => {
+                const storageRef = ref(storage, url);
+                return deleteObject(storageRef).catch(err => {
+                    console.error("Error deleting hero image from storage:", err);
+                });
+            });
+            await Promise.all(deletePromises);
+            setDeletedUrls([]); // Clear after successful delete
+
             setImageUrls(finalImageUrls);
             setImageFiles([]);
             toast.success('Hero section updated!');
@@ -92,14 +122,28 @@ export default function HeroManager() {
     if (loading) return <Loader className="py-20" />;
 
     return (
-        <div>
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Manage Hero Section</h1>
-                <p className="text-gray-500 mt-1">Update the homepage hero slider</p>
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Manage Hero Section</h1>
+                    <p className="text-gray-500 mt-1">Update the homepage hero slider</p>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="btn-primary flex items-center gap-2 px-8"
+                >
+                    {saving ? 'Saving...' : 'Save All Changes'}
+                </button>
             </div>
 
-            <div className="max-w-3xl">
-                <form onSubmit={handleSave} className="bg-white rounded-xl border border-gray-100 p-6 space-y-6 shadow-sm">
+            <hr className="border-gray-200" />
+
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Hero Content & Slider</h2>
+                </div>
+                <form onSubmit={handleSave} className="p-6 space-y-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="input-field" placeholder="Welcome to ExportsHub" />
@@ -111,57 +155,71 @@ export default function HeroManager() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Background Slider Images</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-4 flex items-center justify-between">
+                            <span>Background Slider Images</span>
+                            <span className="text-[11px] text-emerald-600 italic font-medium animate-pulse">
+                                * Note: Save your changes to apply all updates to the landing page slider.
+                            </span>
+                        </label>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
-                            {/* Existing Images */}
-                            {imageUrls.map((url, index) => (
-                                <div key={`existing-${index}`} className="relative group aspect-video rounded-lg overflow-hidden border border-gray-200">
-                                    <img src={url} alt="" className="w-full h-full object-cover" />
-                                    <button
-                                        type="button"
-                                        onClick={() => removeExistingImage(index)}
-                                        className="absolute top-1 right-1 p-1.5 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <HiOutlineTrash className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            ))}
-
-                            {/* New Previews */}
-                            {imageFiles.map((file, index) => (
-                                <div key={`new-${index}`} className="relative group aspect-video rounded-lg overflow-hidden border border-dashed border-emerald-400">
-                                    <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover opacity-70" />
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                        <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">NEW</span>
+                        <div className="max-h-[480px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {/* Existing Images */}
+                                {imageUrls.map((url, index) => (
+                                    <div key={`existing-${index}`} className="relative group aspect-video rounded-lg overflow-hidden border border-black/10 shadow-sm">
+                                        <ImageWithFallback
+                                            src={url}
+                                            alt={`Hero ${index + 1}`}
+                                            name={title || "Hero"}
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteClick('existing', index)}
+                                            className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:scale-110 shadow-lg"
+                                        >
+                                            <HiOutlineTrash className="w-4 h-4" />
+                                        </button>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => removeNewFile(index)}
-                                        className="absolute top-1 right-1 p-1.5 bg-red-600 text-white rounded-full"
-                                    >
-                                        <HiOutlineTrash className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            ))}
+                                ))}
 
-                            {/* Add Button */}
-                            <label className="aspect-video rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all text-gray-500 hover:text-emerald-600">
-                                <HiOutlinePlus className="w-8 h-8 mb-1" />
-                                <span className="text-xs font-medium">Add Image</span>
-                                <input type="file" accept="image/*" multiple onChange={handleFileChange} className="hidden" />
-                            </label>
+                                {/* New Previews */}
+                                {imageFiles.map((file, index) => (
+                                    <div key={`new-${index}`} className="relative group aspect-video rounded-lg overflow-hidden border border-dashed border-emerald-400 bg-emerald-50/30">
+                                        <img src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover opacity-80" />
+                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                            <span className="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">NEW</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDeleteClick('new', index)}
+                                            className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:scale-110 shadow-lg transition-transform"
+                                        >
+                                            <HiOutlineTrash className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {/* Add Button */}
+                                <label className="aspect-video rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-[#10b981] hover:bg-emerald-50 transition-all text-gray-400 hover:text-[#10b981] group">
+                                    <HiOutlinePlus className="w-8 h-8 mb-1 transition-transform group-hover:scale-110" />
+                                    <span className="text-xs font-semibold">Add Image</span>
+                                    <input type="file" accept="image/*" multiple onChange={handleFileChange} className="hidden" />
+                                </label>
+                            </div>
                         </div>
-                        <p className="text-[11px] text-gray-400 italic mt-2">* Tip: Add multiple images to enable a 7-second auto-slider on the home page.</p>
                     </div>
 
-                    <div className="pt-4">
-                        <button type="submit" disabled={saving} className="btn-primary w-full sm:w-auto px-10 disabled:opacity-50">
-                            {saving ? 'Saving...' : 'Save All Changes'}
-                        </button>
-                    </div>
                 </form>
             </div>
+
+            <DeleteConfirmation
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                title="Remove Image"
+                message="Are you sure you want to remove this image from the hero slider? Remember to click 'Save All Changes' to persist this change."
+            />
         </div>
     );
 }

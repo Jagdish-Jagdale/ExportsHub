@@ -5,12 +5,21 @@ import { db } from '../../firebase';
 import { useCollection } from '../../hooks/useFirestore';
 import Loader from '../../components/common/Loader';
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
+import CategoryCard from '../../components/ui/CategoryCard';
+import ImageWithFallback from '../../components/common/ImageWithFallback';
 
 const SLIDE_INTERVAL = 7000; // 7 seconds
 
 export default function Home() {
-    const [hero, setHero] = useState(null);
-    const [heroLoading, setHeroLoading] = useState(true);
+    const [hero, setHero] = useState(() => {
+        const cached = localStorage.getItem('hero_cache');
+        try {
+            return cached ? JSON.parse(cached) : null;
+        } catch {
+            return null;
+        }
+    });
+    const [heroLoading, setHeroLoading] = useState(!hero);
     const [currentSlide, setCurrentSlide] = useState(0);
     const { data: categories, loading: catLoading } = useCollection('categories');
     const scrollContainerRef = useRef(null);
@@ -32,13 +41,8 @@ export default function Home() {
                 if (snap.exists()) {
                     const data = snap.data();
                     setHero(data);
-
-                    // Programmatic Preloading
-                    const urls = data.imageUrls || (data.imageUrl ? [data.imageUrl] : []);
-                    urls.forEach(url => {
-                        const img = new Image();
-                        img.src = url;
-                    });
+                    // Update cache for next visit
+                    localStorage.setItem('hero_cache', JSON.stringify(data));
                 }
             } catch (err) {
                 console.error('Error fetching hero:', err);
@@ -66,21 +70,27 @@ export default function Home() {
     return (
         <div>
             {/* Hero Section */}
-            <section className="relative h-[50vh] md:h-screen min-h-[400px] flex items-center justify-center overflow-hidden">
+            <section className="relative h-[30vh] md:h-screen min-h-[220px] md:min-h-[600px] bg-[#065f46] overflow-hidden">
                 {/* Background Slider */}
                 <div className="absolute inset-0 z-0">
-                    {heroImages.length > 0 ? (
+                    {heroLoading && !hero ? (
+                        <div className="w-full h-full animate-pulse bg-emerald-900/40" />
+                    ) : heroImages.length > 0 ? (
                         heroImages.map((url, index) => (
                             <div
                                 key={`slide-${index}`}
                                 className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
                                     }`}
+                                style={{ backgroundColor: '#065f46' }}
                             >
-                                <img
+                                <ImageWithFallback
                                     src={url}
-                                    alt={`Banner ${index + 1}`}
-                                    className="w-full h-full object-cover"
-                                    fetchpriority={index === 0 ? "high" : "low"}
+                                    alt=""
+                                    className={`absolute inset-0 w-full h-full block transition-opacity duration-700 object-contain md:object-cover object-center ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                                    style={{
+                                        backgroundColor: '#065f46'
+                                    }}
+                                    fetchPriority={index === 0 ? "high" : "low"}
                                 />
                             </div>
                         ))
@@ -88,35 +98,35 @@ export default function Home() {
                         <div className="w-full h-full bg-gradient-to-br from-[#065f46] via-[#047857] to-[#059669]" />
                     )}
                     {/* Overlay to ensure text readability */}
-                    <div className="absolute inset-0 bg-black/25" />
+                    <div className="absolute inset-0 bg-black/20" />
                 </div>
 
                 {/* Slider Indicators */}
                 {heroImages.length > 1 && (
-                    <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+                    <div className="absolute bottom-4 md:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
                         {heroImages.map((_, index) => (
                             <button
                                 key={`indicator-${index}`}
                                 onClick={() => setCurrentSlide(index)}
-                                className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-emerald-500 w-6 md:w-8' : 'bg-white/40'
+                                className={`w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-emerald-500 w-5 md:w-8' : 'bg-white/40'
                                     }`}
                             />
                         ))}
                     </div>
                 )}
 
-                <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-                    <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-3 md:mb-6 drop-shadow-2xl leading-tight">
+                <div className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4 max-w-4xl mx-auto">
+                    <h1 className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-3 md:mb-6 drop-shadow-2xl leading-tight">
                         {hero?.title || 'Welcome to ExportsHub'}
                     </h1>
-                    <p className="text-sm sm:text-base md:text-lg lg:text-2xl text-white/90 mb-8 md:mb-12 drop-shadow-lg max-w-2xl mx-auto font-medium">
+                    <p className="text-xs sm:text-sm md:text-lg lg:text-2xl text-white/90 mb-6 md:mb-12 drop-shadow-lg max-w-2xl mx-auto font-medium">
                         {hero?.subtitle || 'Discover premium export products across multiple categories'}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-3 md:gap-5 justify-center">
-                        <Link to="/products" className="px-6 py-3 md:px-10 md:py-4 bg-[#10b981] hover:bg-[#059669] text-white font-bold rounded-lg transition-all shadow-xl active:scale-95 group text-sm md:text-base">
+                    <div className="flex flex-col sm:flex-row gap-2.5 md:gap-5 justify-center px-6 sm:px-0">
+                        <Link to="/products" className="px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 bg-[#10b981] hover:bg-[#059669] text-white font-bold rounded-lg transition-all shadow-xl active:scale-95 group text-xs sm:text-sm md:text-base">
                             Explore Products
                         </Link>
-                        <Link to="/categories" className="px-6 py-3 md:px-10 md:py-4 bg-transparent hover:bg-white/10 text-white font-bold rounded-lg border border-white/40 transition-all active:scale-95 text-sm md:text-base">
+                        <Link to="/categories" className="px-4 py-2.5 sm:px-6 sm:py-3 md:px-10 md:py-4 bg-transparent hover:bg-white/10 text-white font-bold rounded-lg border border-white/40 transition-all active:scale-95 text-xs sm:text-sm md:text-base">
                             Get a Quote
                         </Link>
                     </div>
@@ -162,22 +172,7 @@ export default function Home() {
                         className="flex overflow-x-auto gap-4 md:gap-6 scrollbar-hide snap-x snap-mandatory pb-4"
                     >
                         {categories.map(cat => (
-                            <Link
-                                key={cat.id}
-                                to={`/products?category=${cat.id}`}
-                                className="min-w-[70%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[23.5%] group relative rounded-2xl overflow-hidden aspect-[4/3] shadow-sm hover:shadow-xl transition-all duration-300 snap-start"
-                            >
-                                {cat.image ? (
-                                    <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
-                                ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-emerald-400 to-teal-600" />
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                    <h3 className="text-white font-bold text-lg md:text-xl drop-shadow mb-1">{cat.name}</h3>
-                                    <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">Explore Category →</span>
-                                </div>
-                            </Link>
+                            <CategoryCard key={cat.id} category={cat} />
                         ))}
                     </div>
                 )}

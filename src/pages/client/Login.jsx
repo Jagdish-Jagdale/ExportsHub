@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -32,7 +34,7 @@ export default function Login() {
                         <img
                             src="/ExportsHubLogo.png"
                             alt="ExportsHub Logo"
-                            className="h-22 w-20 object-contain"
+                            className="h-28 w-auto object-contain"
                         />
                     </Link>
                     <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
@@ -51,16 +53,29 @@ export default function Login() {
                             required
                         />
                     </div>
-                    <div>
+                    <div className="relative">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            className="input-field"
-                            placeholder="••••••••"
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                className="input-field pr-12"
+                                placeholder="••••••••"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-emerald-600 transition-colors"
+                            >
+                                {showPassword ? (
+                                    <HiOutlineEyeOff className="w-5 h-5" />
+                                ) : (
+                                    <HiOutlineEye className="w-5 h-5" />
+                                )}
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
                         {loading ? 'Signing in...' : 'Sign In'}

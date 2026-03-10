@@ -5,16 +5,18 @@ export default function Footer() {
     return (
         <footer className="bg-gray-900 text-gray-400">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <Link to="/" className="flex items-center gap-2 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+                    <div className="flex flex-col items-center md:items-start">
+                        <Link to="/" className="inline-block mb-6">
                             <img
                                 src="/ExportsHubLogo.png"
                                 alt="ExportsHub Logo"
-                                className="h-28 w-auto rounded-lg object-contain"
+                                className="h-20 md:h-24 w-auto rounded-lg object-contain transition-all"
                             />
                         </Link>
-                        <p className="text-sm leading-relaxed">Your trusted platform for browsing and ordering quality export products across multiple categories.</p>
+                        <p className="text-sm leading-relaxed max-w-xs md:max-w-none mx-auto md:mx-0">
+                            Your trusted platform for browsing and ordering quality export products across multiple categories.
+                        </p>
                     </div>
                     <div>
                         <h3 className="text-white font-semibold mb-4">Quick Links</h3>

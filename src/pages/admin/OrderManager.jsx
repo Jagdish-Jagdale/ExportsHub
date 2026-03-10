@@ -10,7 +10,7 @@ import QuotationForm from '../../components/admin/QuotationForm';
 const STATUS_OPTIONS = ['Pending', 'Approved', 'Completed'];
 const STATUS_COLORS = {
     Pending: 'bg-amber-50 text-amber-700 border-amber-100',
-    Approved: 'bg-blue-50 text-blue-700 border-blue-100',
+    Approved: 'bg-green-50 text-green-700 border-green-100',
     Completed: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     quoted: 'bg-purple-50 text-purple-700 border-purple-100',
 };
@@ -170,23 +170,23 @@ export default function OrderManager() {
                     <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Search & Filters</h2>
                 </div>
                 <hr className="border-gray-100" />
-                <div className="p-4 flex flex-col md:flex-row gap-6 items-center justify-between">
-                    <div className="relative w-full flex-1">
+                <div className="p-4 flex flex-col lg:flex-row gap-4 items-center">
+                    <div className="relative w-full lg:flex-1">
                         <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500 w-5 h-5" />
                         <input
                             type="text"
                             placeholder="Search by ID, customer name or email..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none transition-all text-sm"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none transition-all text-sm bg-white"
                         />
                     </div>
-                    <div className="flex items-center gap-2 w-full md:w-auto">
-                        <span className="text-sm text-gray-500 whitespace-nowrap">Sort by:</span>
+                    <div className="flex items-center gap-2 w-full lg:w-auto">
+                        <span className="text-sm text-gray-500 whitespace-nowrap">Sort:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
-                            className="w-full md:w-auto px-3 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#10b981] text-sm"
+                            className="w-full lg:w-auto px-3 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#10b981] text-sm bg-white"
                         >
                             <option value="date-desc">Latest First</option>
                             <option value="date-asc">Oldest First</option>
@@ -364,8 +364,8 @@ export default function OrderManager() {
 
                                 {/* Products Accordion */}
                                 {expandedOrders.has(order.id) && (
-                                    <div className="border-t border-gray-100 pt-4 mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                                        <table className="w-full text-sm">
+                                    <div className="border-t border-gray-100 pt-4 mt-4 animate-in fade-in slide-in-from-top-2 duration-300 overflow-x-auto">
+                                        <table className="w-full text-sm min-w-[500px]">
                                             <thead>
                                                 <tr className="text-gray-500 text-xs uppercase">
                                                     <th className="text-left pb-2 font-medium">Product</th>

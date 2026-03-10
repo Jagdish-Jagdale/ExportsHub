@@ -37,20 +37,22 @@ export default function Dashboard() {
     }, []);
 
     const cards = [
-        { label: 'Total Products', value: stats.products, icon: HiOutlineCube, color: 'bg-blue-500' },
+        { label: 'Total Products', value: stats.products, icon: HiOutlineCube, color: 'bg-green-700' },
         { label: 'Categories', value: stats.categories, icon: HiOutlineCollection, color: 'bg-emerald-500' },
         { label: 'Total Orders', value: stats.orders, icon: HiOutlineClipboardList, color: 'bg-purple-500' },
         { label: 'Pending Orders', value: stats.pendingOrders, icon: HiOutlineClock, color: 'bg-amber-500' },
     ];
 
     return (
-        <div>
-            <div className="mb-8">
+        <div className="space-y-6">
+            <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
                 <p className="text-gray-500 mt-1">Welcome to your ExportsHub admin panel</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <hr className="border-gray-200 mt-6" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
                 {cards.map((card, i) => (
                     <div key={i} className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
                         <div className="flex items-center justify-between mb-4">

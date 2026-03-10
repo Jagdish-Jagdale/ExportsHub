@@ -33,11 +33,9 @@ export default function AdminLayout() {
         <div className="min-h-screen bg-gray-100 flex">
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200 fixed h-full z-30">
-                <div className="p-6 border-b border-gray-100">
-                    <div className="flex items-center gap-2">
-                        <img src="/ExportsHubLogo.png" alt="Logo" className="h-10 w-auto rounded object-contain" />
-                        <span className="text-lg font-bold text-gray-900 ml-1">Admin Panel</span>
-                    </div>
+                <div className="p-3 border-b border-gray-100 flex flex-col items-center text-center gap-3">
+                    <img src="/ExportsHubLogo.png" alt="Logo" className="h-20 w-auto rounded object-contain" />
+                    <span className="text-xl font-bold text-gray-900 tracking-tight">Admin Panel</span>
                 </div>
                 <nav className="flex-1 p-4 space-y-1.5">
                     {sidebarLinks.map(link => (
@@ -75,8 +73,9 @@ export default function AdminLayout() {
                 <>
                     <div className="lg:hidden fixed inset-0 bg-black/30 z-40" onClick={() => setSidebarOpen(false)} />
                     <aside className="lg:hidden fixed left-0 top-0 bottom-0 w-64 bg-white z-50 shadow-xl">
-                        <div className="p-6 border-b border-gray-100">
-                            <span className="text-lg font-bold text-gray-900">Admin Panel</span>
+                        <div className="p-8 border-b border-gray-100 flex flex-col items-center text-center gap-3">
+                            <img src="/ExportsHubLogo.png" alt="Logo" className="h-20 w-auto rounded object-contain" />
+                            <span className="text-xl font-bold text-gray-900 tracking-tight">Admin Panel</span>
                         </div>
                         <nav className="p-4 space-y-1.5">
                             {sidebarLinks.map(link => (
@@ -102,7 +101,7 @@ export default function AdminLayout() {
 
             {/* Main Content */}
             <main className="flex-1 lg:ml-64 pt-16 lg:pt-0">
-                <div className="p-4 sm:p-6 lg:p-8">
+                <div className="p-4 sm:p-6 lg:p-10">
                     <Outlet />
                 </div>
             </main>

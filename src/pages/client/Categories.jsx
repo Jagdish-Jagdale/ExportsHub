@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCollection } from '../../hooks/useFirestore';
 import Loader from '../../components/common/Loader';
+import CategoryCard from '../../components/ui/CategoryCard';
 
 export default function Categories() {
     const { data: categories, loading } = useCollection('categories');
@@ -22,21 +23,7 @@ export default function Categories() {
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {categories.map(cat => (
-                        <Link
-                            key={cat.id}
-                            to={`/products?category=${cat.id}`}
-                            className="group relative rounded-2xl overflow-hidden aspect-square shadow-sm hover:shadow-xl transition-all duration-300"
-                        >
-                            {cat.image ? (
-                                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
-                            ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-emerald-400 to-teal-600" />
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                            <div className="absolute bottom-0 left-0 right-0 p-5">
-                                <h3 className="text-white font-bold text-xl drop-shadow">{cat.name}</h3>
-                            </div>
-                        </Link>
+                        <CategoryCard key={cat.id} category={cat} className="min-w-0 aspect-square" />
                     ))}
                 </div>
             )}

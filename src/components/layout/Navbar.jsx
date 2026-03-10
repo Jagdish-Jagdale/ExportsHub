@@ -43,30 +43,30 @@ export default function Navbar() {
 
     // Style logic
     const navbarBg = isHome
-        ? (scrolled ? 'bg-white shadow-md' : 'bg-transparent')
-        : 'bg-white border-b border-gray-100 sticky top-0';
+        ? (scrolled ? 'bg-white shadow-md' : 'bg-white md:bg-transparent')
+        : 'bg-white border-b border-gray-100';
 
     const textColor = isHome
-        ? (scrolled ? 'text-gray-700' : 'text-white')
+        ? (scrolled ? 'text-gray-700' : 'text-gray-700 md:text-white')
         : 'text-gray-700';
 
     const logoColor = isHome
-        ? (scrolled ? 'text-gray-900' : 'text-white')
+        ? (scrolled ? 'text-gray-900' : 'text-gray-900 md:text-white')
         : 'text-gray-900';
 
     const activeColor = 'text-[#10b981]';
 
     return (
-        <nav className={`${navbarBg} ${isHome ? 'fixed' : ''} w-full top-0 z-50 transition-all duration-300`}>
+        <nav className={`${navbarBg} ${isHome ? 'md:fixed sticky' : 'sticky'} w-full top-0 z-50 transition-all duration-300`}>
             <div className="w-full mx-auto px-4 sm:px-10 lg:px-16">
-                <div className="grid grid-cols-3 items-center h-24">
+                <div className="flex items-center justify-between md:grid md:grid-cols-3 h-20 md:h-24">
                     {/* Logo - Left */}
                     <div className="flex items-center justify-start">
                         <Link to="/" className="flex items-center gap-2 shrink-0">
                             <img
                                 src="/ExportsHubLogo.png"
                                 alt="ExportsHub Logo"
-                                className="h-20 md:h-22 rounded-xl object-contain transition-all duration-300"
+                                className="h-14 md:h-20 rounded-xl object-contain transition-all duration-300"
                             />
                         </Link>
                     </div>
@@ -74,7 +74,9 @@ export default function Navbar() {
                     {/* Desktop Nav - Center */}
                     <div className="hidden md:flex justify-center items-center gap-12">
                         {navLinks.map(link => {
-                            const isActive = location.pathname === link.to;
+                            const isActive = link.to === '/'
+                                ? location.pathname === '/'
+                                : location.pathname.startsWith(link.to);
                             return (
                                 <Link
                                     key={link.to}
@@ -108,8 +110,12 @@ export default function Navbar() {
                                         Admin
                                     </Link>
                                 )}
-                                <Link to="/my-orders" className={`text-sm font-bold ${textColor} hover:text-[#10b981] transition-colors whitespace-nowrap uppercase tracking-wide`}>
+                                <Link
+                                    to="/my-orders"
+                                    className={`text-sm font-bold transition-all relative group whitespace-nowrap uppercase tracking-wide ${location.pathname.startsWith('/my-orders') ? 'text-[#10b981]' : textColor} hover:text-[#10b981]`}
+                                >
                                     My Orders
+                                    <span className={`absolute -bottom-2 left-0 h-0.5 bg-[#10b981] transition-all ${location.pathname.startsWith('/my-orders') ? 'w-full' : 'w-0 group-hover:w-full'}`} />
                                 </Link>
                                 <button onClick={handleLogout} className={`px-3 py-2 text-sm font-bold ${textColor} hover:bg-gray-100/10 rounded-xl transition-colors whitespace-nowrap uppercase tracking-wide`}>
                                     Logout

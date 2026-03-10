@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { useCollection } from '../../hooks/useFirestore';
 import { HiOutlinePencil, HiOutlineTrash, HiOutlinePlus, HiOutlineX, HiOutlineSearch, HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import Loader from '../../components/common/Loader';
+import DeleteConfirmation from '../../components/common/DeleteConfirmation';
+import ImageWithFallback from '../../components/common/ImageWithFallback';
 
 export default function CategoryManager() {
     const { data: categories, loading } = useCollection('categories');
@@ -18,6 +20,10 @@ export default function CategoryManager() {
     const [sortBy, setSortBy] = useState('newest');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8; // Adjust based on preference
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleteName, setDeleteName] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const filteredCategories = categories?.filter(cat =>
         cat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -48,7 +54,24 @@ export default function CategoryManager() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        if (!name.trim()) { toast.error('Name is required'); return; }
+        const trimmedName = name.trim();
+        if (!trimmedName) { toast.error('Name is required'); return; }
+
+        // Check for duplicates (case-insensitive)
+        const isDuplicate = categories?.some(cat =>
+            cat.name.toLowerCase() === trimmedName.toLowerCase() && cat.id !== editId
+        );
+
+        if (isDuplicate) {
+            toast.error('A category with this name already exists');
+            return;
+        }
+
+        if (!editId && !imageFile) {
+            toast.error('Please upload a category image');
+            return;
+        }
+
         setSaving(true);
         try {
             let imageUrl = '';
@@ -59,13 +82,13 @@ export default function CategoryManager() {
             }
 
             if (editId) {
-                const update = { name: name.trim() };
+                const update = { name: trimmedName };
                 if (imageUrl) update.image = imageUrl;
                 await updateDoc(doc(db, 'categories', editId), update);
                 toast.success('Category updated!');
             } else {
                 await addDoc(collection(db, 'categories'), {
-                    name: name.trim(),
+                    name: trimmedName,
                     image: imageUrl,
                     createdAt: new Date().toISOString()
                 });
@@ -80,13 +103,33 @@ export default function CategoryManager() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Delete this category?')) return;
+    const handleDeleteClick = (id, name) => {
+        setDeleteId(id);
+        setDeleteName(name);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        setIsDeleting(true);
         try {
-            await deleteDoc(doc(db, 'categories', id));
+            // Find category to get image URL
+            const category = categories.find(c => c.id === deleteId);
+            if (category?.image) {
+                try {
+                    const storageRef = ref(storage, category.image);
+                    await deleteObject(storageRef);
+                } catch (err) {
+                    console.error("Error deleting image from storage:", err);
+                    // Continue even if image delete fails
+                }
+            }
+            await deleteDoc(doc(db, 'categories', deleteId));
             toast.success('Category deleted');
+            setShowDeleteModal(false);
         } catch (err) {
             toast.error('Failed to delete');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -111,8 +154,8 @@ export default function CategoryManager() {
                 <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
                     <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Search & Filters</h2>
                 </div>
-                <div className="p-4 flex flex-col md:flex-row gap-6 items-center justify-between">
-                    <div className="relative w-full flex-1">
+                <div className="p-4 flex flex-col lg:flex-row gap-4 items-center">
+                    <div className="relative w-full lg:flex-1">
                         <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
                             type="text"
@@ -122,18 +165,18 @@ export default function CategoryManager() {
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none transition-all text-sm"
+                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#10b981] focus:border-[#10b981] outline-none transition-all text-sm bg-white"
                         />
                     </div>
-                    <div className="flex items-center gap-2 w-full md:w-auto">
-                        <span className="text-sm text-gray-500 whitespace-nowrap">Sort by:</span>
+                    <div className="flex items-center gap-2 w-full lg:w-auto">
+                        <span className="text-sm text-gray-500 whitespace-nowrap">Sort:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => {
                                 setSortBy(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="w-full md:w-auto px-3 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#10b981] text-sm"
+                            className="w-full lg:w-auto px-3 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#10b981] text-sm bg-white"
                         >
                             <option value="newest">Newest First</option>
                             <option value="name">A - Z</option>
@@ -153,19 +196,22 @@ export default function CategoryManager() {
                         {paginatedCategories.map(cat => (
                             <div key={cat.id} className="bg-white rounded-xl border border-black/10 overflow-hidden shadow-sm hover:border-[#10b981] hover:shadow-md transition-all group">
                                 <div className="aspect-video bg-gray-100">
-                                    {cat.image ? (
-                                        <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
-                                    ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-emerald-400 to-teal-600" />
-                                    )}
+                                    <ImageWithFallback
+                                        src={cat.image}
+                                        alt={cat.name}
+                                        name={cat.name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
                                 <div className="p-4 flex items-center justify-between">
-                                    <h3 className="font-semibold text-gray-900">{cat.name}</h3>
+                                    <h3 className="font-semibold text-gray-900 truncate flex-1" title={cat.name}>
+                                        {cat.name.length > 20 ? cat.name.substring(0, 20) + '...' : cat.name}
+                                    </h3>
                                     <div className="flex items-center gap-1">
-                                        <button onClick={() => openEdit(cat)} className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
+                                        <button onClick={() => openEdit(cat)} className="p-2 text-gray-400 hover:text-green-700 transition-colors">
                                             <HiOutlinePencil className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => handleDelete(cat.id)} className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                                        <button onClick={() => handleDeleteClick(cat.id, cat.name)} title="Delete Category" className="p-2 text-gray-400 hover:text-red-600 transition-colors">
                                             <HiOutlineTrash className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -224,11 +270,24 @@ export default function CategoryManager() {
                         </div>
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Name <span className="text-red-500">*</span>
+                                </label>
                                 <input type="text" value={name} onChange={e => setName(e.target.value)} className="input-field" placeholder="Category name" required />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Image <span className="text-red-500">*</span>
+                                </label>
+                                {(imageFile || (editId && categories.find(c => c.id === editId)?.image)) && (
+                                    <div className="mb-3 w-full aspect-video rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
+                                        <ImageWithFallback
+                                            src={imageFile ? URL.createObjectURL(imageFile) : categories.find(c => c.id === editId)?.image}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                )}
                                 <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files[0])} className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700" />
                             </div>
                             <div className="flex gap-3 pt-2">
@@ -241,6 +300,16 @@ export default function CategoryManager() {
                     </div>
                 </div>
             )}
+
+            <DeleteConfirmation
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={confirmDelete}
+                loading={isDeleting}
+                title="Delete Category"
+                message="Are you sure you want to delete this category? All products under this category will remain, but they won't have a specific category assigned."
+                itemLabel={deleteName}
+            />
         </div>
     );
 }
