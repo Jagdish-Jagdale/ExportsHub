@@ -6,7 +6,6 @@ import { useCollection } from '../../hooks/useFirestore';
 import Loader from '../../components/common/Loader';
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import CategoryCard from '../../components/ui/CategoryCard';
-import ImageWithFallback from '../../components/common/ImageWithFallback';
 
 const SLIDE_INTERVAL = 7000; // 7 seconds
 
@@ -73,9 +72,7 @@ export default function Home() {
             <section className="relative h-[30vh] md:h-screen min-h-[220px] md:min-h-[600px] bg-[#065f46] overflow-hidden">
                 {/* Background Slider */}
                 <div className="absolute inset-0 z-0">
-                    {heroLoading && !hero ? (
-                        <div className="w-full h-full animate-pulse bg-emerald-900/40" />
-                    ) : heroImages.length > 0 ? (
+                    {heroImages.length > 0 ? (
                         heroImages.map((url, index) => (
                             <div
                                 key={`slide-${index}`}
@@ -83,10 +80,10 @@ export default function Home() {
                                     }`}
                                 style={{ backgroundColor: '#065f46' }}
                             >
-                                <ImageWithFallback
+                                <img
                                     src={url}
                                     alt=""
-                                    className={`absolute inset-0 w-full h-full block transition-opacity duration-700 object-contain md:object-cover object-center ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                                    className={`absolute inset-0 w-full h-full block object-contain md:object-cover object-center`}
                                     style={{
                                         backgroundColor: '#065f46'
                                     }}
