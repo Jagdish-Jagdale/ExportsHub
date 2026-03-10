@@ -58,27 +58,28 @@ export default function Navbar() {
 
     return (
         <nav className={`${navbarBg} ${isHome ? 'fixed' : ''} w-full top-0 z-50 transition-all duration-300`}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16 md:h-20">
-                    {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 shrink-0">
-                        <div className="w-9 h-9 bg-[#10b981] rounded-xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
-                            <span className="text-white font-bold text-base">E</span>
-                        </div>
-                        <span className={`text-xl font-extrabold ${logoColor} tracking-tight`}>
-                            Exports<span className="text-[#10b981]">Hub</span>
-                        </span>
-                    </Link>
+            <div className="w-full mx-auto px-4 sm:px-10 lg:px-16">
+                <div className="grid grid-cols-3 items-center h-24">
+                    {/* Logo - Left */}
+                    <div className="flex items-center justify-start">
+                        <Link to="/" className="flex items-center gap-2 shrink-0">
+                            <img
+                                src="/ExportsHubLogo.png"
+                                alt="ExportsHub Logo"
+                                className="h-20 md:h-22 rounded-xl object-contain transition-all duration-300"
+                            />
+                        </Link>
+                    </div>
 
-                    {/* Desktop Nav */}
-                    <div className="hidden md:flex items-center gap-10">
+                    {/* Desktop Nav - Center */}
+                    <div className="hidden md:flex justify-center items-center gap-12">
                         {navLinks.map(link => {
                             const isActive = location.pathname === link.to;
                             return (
                                 <Link
                                     key={link.to}
                                     to={link.to}
-                                    className={`${isActive ? 'text-[#10b981]' : textColor} hover:text-[#10b981] font-bold text-sm tracking-wide uppercase transition-all relative group`}
+                                    className={`${isActive ? 'text-[#10b981]' : textColor} hover:text-[#10b981] font-bold text-sm tracking-wide uppercase transition-all relative group whitespace-nowrap`}
                                 >
                                     {link.label}
                                     <span className={`absolute -bottom-2 left-0 h-0.5 bg-[#10b981] transition-all ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
@@ -87,8 +88,8 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Right side */}
-                    <div className="flex items-center gap-4">
+                    {/* Right side - End */}
+                    <div className="flex items-center justify-end gap-3 md:gap-6">
                         {user && (
                             <Link to="/cart" className={`relative p-2.5 ${textColor} hover:text-[#10b981] transition-colors`}>
                                 <HiOutlineShoppingCart className="w-6 h-6" />
@@ -101,25 +102,25 @@ export default function Navbar() {
                         )}
 
                         {user ? (
-                            <div className="hidden md:flex items-center gap-4">
+                            <div className="hidden md:flex items-center gap-6">
                                 {isAdmin && (
-                                    <Link to="/admin" className="text-sm font-bold text-[#10b981] hover:text-[#059669] transition-colors bg-[#10b981]/10 px-3 py-1.5 rounded-lg">
+                                    <Link to="/admin" className="text-sm font-bold text-[#10b981] hover:text-[#059669] transition-colors bg-[#10b981]/10 px-3 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-wide">
                                         Admin
                                     </Link>
                                 )}
-                                <Link to="/my-orders" className={`text-sm font-bold ${textColor} hover:text-[#10b981] transition-colors`}>
+                                <Link to="/my-orders" className={`text-sm font-bold ${textColor} hover:text-[#10b981] transition-colors whitespace-nowrap uppercase tracking-wide`}>
                                     My Orders
                                 </Link>
-                                <button onClick={handleLogout} className={`px-4 py-2 text-sm font-bold ${textColor} hover:bg-gray-100/10 rounded-xl transition-colors`}>
+                                <button onClick={handleLogout} className={`px-3 py-2 text-sm font-bold ${textColor} hover:bg-gray-100/10 rounded-xl transition-colors whitespace-nowrap uppercase tracking-wide`}>
                                     Logout
                                 </button>
                             </div>
                         ) : (
                             <div className="hidden md:flex items-center gap-4">
-                                <Link to="/login" className={`px-5 py-2.5 text-sm font-bold ${textColor} hover:bg-white/10 rounded-xl transition-colors`}>
+                                <Link to="/login" className={`px-4 py-2 text-sm font-bold ${textColor} hover:bg-white/10 rounded-xl transition-colors`}>
                                     Login
                                 </Link>
-                                <Link to="/signup" className="bg-[#10b981] hover:bg-[#059669] text-white text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-95">
+                                <Link to="/signup" className="bg-[#10b981] hover:bg-[#059669] text-white text-sm font-bold px-6 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-95">
                                     Sign Up
                                 </Link>
                             </div>

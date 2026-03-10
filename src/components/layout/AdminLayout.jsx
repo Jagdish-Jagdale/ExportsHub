@@ -35,10 +35,8 @@ export default function AdminLayout() {
             <aside className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200 fixed h-full z-30">
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">E</span>
-                        </div>
-                        <span className="text-lg font-bold text-gray-900">Admin Panel</span>
+                        <img src="/ExportsHubLogo.png" alt="Logo" className="h-10 w-auto rounded object-contain" />
+                        <span className="text-lg font-bold text-gray-900 ml-1">Admin Panel</span>
                     </div>
                 </div>
                 <nav className="flex-1 p-4 space-y-1.5">
@@ -64,10 +62,8 @@ export default function AdminLayout() {
             {/* Mobile Header */}
             <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 px-4 h-16 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">E</span>
-                    </div>
-                    <span className="text-lg font-bold text-gray-900">Admin</span>
+                    <img src="/ExportsHubLogo.png" alt="Logo" className="h-8 w-auto rounded object-contain" />
+                    <span className="text-lg font-bold text-gray-900 ml-1">Admin</span>
                 </div>
                 <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-gray-600">
                     {sidebarOpen ? <HiOutlineX className="w-6 h-6" /> : <HiOutlineMenu className="w-6 h-6" />}

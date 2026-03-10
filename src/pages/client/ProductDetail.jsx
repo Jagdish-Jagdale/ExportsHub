@@ -118,8 +118,8 @@ export default function ProductDetail() {
                                         key={unit}
                                         onClick={() => setSelectedUnit(unit)}
                                         className={`px-5 py-2.5 rounded-lg text-sm font-medium border transition-all ${selectedUnit === unit
-                                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
-                                                : 'bg-white text-gray-700 border-gray-300 hover:border-emerald-400'
+                                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:border-emerald-400'
                                             }`}
                                     >
                                         {unit}

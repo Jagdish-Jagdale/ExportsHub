@@ -8,10 +8,11 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
                         <Link to="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">E</span>
-                            </div>
-                            <span className="text-xl font-bold text-white">Exports<span className="text-emerald-500">Hub</span></span>
+                            <img
+                                src="/ExportsHubLogo.png"
+                                alt="ExportsHub Logo"
+                                className="h-28 w-auto rounded-lg object-contain"
+                            />
                         </Link>
                         <p className="text-sm leading-relaxed">Your trusted platform for browsing and ordering quality export products across multiple categories.</p>
                     </div>

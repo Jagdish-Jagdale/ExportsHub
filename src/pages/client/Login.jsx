@@ -29,9 +29,11 @@ export default function Login() {
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <Link to="/" className="inline-flex items-center gap-2 mb-4">
-                        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
-                            <span className="text-white font-bold">E</span>
-                        </div>
+                        <img
+                            src="/ExportsHubLogo.png"
+                            alt="ExportsHub Logo"
+                            className="h-22 w-20 object-contain"
+                        />
                     </Link>
                     <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
                     <p className="text-gray-500 mt-1">Sign in to your ExportsHub account</p>

@@ -1,0 +1,16 @@
+{
+    "name": "exportshub-imap-reader",
+    "version": "1.0.0",
+    "description": "IMAP email reader that syncs Gmail to Firestore replies collection",
+    "main": "imap-reader.js",
+    "scripts": {
+        "start": "node imap-reader.js",
+        "watch": "node imap-reader.js --watch"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "firebase-admin": "^12.1.0",
+        "imap": "^0.8.19",
+        "mailparser": "^3.7.1"
+    }
+}

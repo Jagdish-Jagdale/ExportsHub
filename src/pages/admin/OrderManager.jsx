@@ -119,15 +119,16 @@ export default function OrderManager() {
         });
     };
 
-    // Filtering & Sorting for Replies
     const filteredReplies = replies
         .filter(r => {
+            const subject = (r.subject || '');
+            const isQuotationReply = true; // show all synced emails
             const matchesStatus = replyStatusFilter === 'All' || r.status === replyStatusFilter;
             const matchesSearch = !searchTerm ||
-                r.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 r.fromEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 r.message?.toLowerCase().includes(searchTerm.toLowerCase());
-            return matchesStatus && matchesSearch;
+            return isQuotationReply && matchesStatus && matchesSearch;
         })
         .sort((a, b) => {
             const t1 = a.createdAt?.toMillis ? a.createdAt.toMillis() : new Date(a.createdAt).getTime();
@@ -211,7 +212,7 @@ export default function OrderManager() {
                         >
                             {opt}
                             <span className={`text-[10px] font-medium ${statusFilter === opt ? 'text-[#10b981]/70' : 'text-gray-400'}`}>
-                                {opt === 'All' ? orders.length : orders.filter(o => o.status?.toLowerCase() === opt.toLowerCase()).length}
+                                {opt === 'All' ? orders.length : opt === 'Replies' ? replies.length : orders.filter(o => o.status?.toLowerCase() === opt.toLowerCase()).length}
                             </span>
                             {statusFilter === opt && (
                                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#10b981] rounded-t-full" />
@@ -233,7 +234,7 @@ export default function OrderManager() {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-gray-900 tracking-tight">Support Inbox</h3>
-                                    <p className="text-sm font-medium text-emerald-600">support@exportshub.in</p>
+                                    <p className="text-sm font-medium text-emerald-600">rehansam1216@10751395.brevosend.com</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 bg-white/50 p-1 rounded-xl border border-emerald-100/50">
@@ -273,7 +274,7 @@ export default function OrderManager() {
                             <p className="text-gray-500 max-w-xs mx-auto">
                                 {searchTerm
                                     ? `Adjust your search "${searchTerm}" or filter to find what you're looking for.`
-                                    : `Emails from support@exportshub.in filtered by ${replyStatusFilter} will appear here.`
+                                    : `Emails from rehansam1216@10751395.brevosend.com filtered by ${replyStatusFilter} will appear here.`
                                 }
                             </p>
                         </div>

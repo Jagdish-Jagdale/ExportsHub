@@ -29,7 +29,17 @@ export default function Home() {
         const fetchHero = async () => {
             try {
                 const snap = await getDoc(doc(db, 'hero', 'main'));
-                if (snap.exists()) setHero(snap.data());
+                if (snap.exists()) {
+                    const data = snap.data();
+                    setHero(data);
+
+                    // Programmatic Preloading
+                    const urls = data.imageUrls || (data.imageUrl ? [data.imageUrl] : []);
+                    urls.forEach(url => {
+                        const img = new Image();
+                        img.src = url;
+                    });
+                }
             } catch (err) {
                 console.error('Error fetching hero:', err);
             } finally {
@@ -70,6 +80,7 @@ export default function Home() {
                                     src={url}
                                     alt={`Banner ${index + 1}`}
                                     className="w-full h-full object-cover"
+                                    fetchpriority={index === 0 ? "high" : "low"}
                                 />
                             </div>
                         ))
