@@ -9,7 +9,7 @@ export default function CategoryCard({ category, className = "" }) {
     return (
         <Link
             to={`/products?category=${category.id}`}
-            className={`group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${className || "min-w-[70%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[23.5%] aspect-[4/3] snap-start"}`}
+            className={`group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 ${className || "min-w-[62%] sm:min-w-[45%] md:min-w-[30%] lg:min-w-[23.5%] aspect-[4/3] snap-start"}`}
         >
             <div className="absolute inset-0 z-0">
                 {!imageLoaded && <Skeleton className="absolute inset-0 z-10 rounded-none w-full h-full" />}

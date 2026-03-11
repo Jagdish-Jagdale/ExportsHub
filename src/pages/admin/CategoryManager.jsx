@@ -282,9 +282,10 @@ export default function CategoryManager() {
                                 {(imageFile || (editId && categories.find(c => c.id === editId)?.image)) && (
                                     <div className="mb-3 w-full aspect-video rounded-xl overflow-hidden border border-gray-100 bg-gray-50">
                                         <ImageWithFallback
-                                            src={imageFile ? URL.createObjectURL(imageFile) : categories.find(c => c.id === editId)?.image}
+                                            src={imageFile ? URL.createObjectURL(imageFile) : (editId ? categories.find(c => c.id === editId)?.image : null)}
                                             alt="Preview"
                                             className="w-full h-full object-cover"
+                                            key={imageFile ? URL.createObjectURL(imageFile) : 'default'}
                                         />
                                     </div>
                                 )}

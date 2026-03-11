@@ -6,6 +6,7 @@ import { useCollection } from '../../hooks/useFirestore';
 import Loader from '../../components/common/Loader';
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import CategoryCard from '../../components/ui/CategoryCard';
+import ProductSlider from '../../components/ui/ProductSlider';
 
 const SLIDE_INTERVAL = 7000; // 7 seconds
 
@@ -95,7 +96,7 @@ export default function Home() {
                         <div className="w-full h-full bg-gradient-to-br from-[#065f46] via-[#047857] to-[#059669]" />
                     )}
                     {/* Overlay to ensure text readability */}
-                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="absolute inset-0 bg-black/70" />
                 </div>
 
                 {/* Slider Indicators */}
@@ -138,8 +139,8 @@ export default function Home() {
                 `}</style>
                 <div className="flex items-center justify-between mb-12">
                     <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Browse by Category</h2>
-                        <p className="text-gray-500 mt-1 sm:mt-2 text-sm md:text-base">Find products organized by category</p>
+                        <h2 className="text-xl md:text-3xl font-bold text-gray-900">Browse by Category</h2>
+                        <p className="text-gray-500 mt-1 sm:mt-2 text-[13px] md:text-base">Find products organized by category</p>
                     </div>
                     {categories.length > 4 && (
                         <div className="hidden sm:flex gap-2">
@@ -174,6 +175,13 @@ export default function Home() {
                     </div>
                 )}
             </section>
+
+            {/* Top Products Slider */}
+            <div className="bg-gray-50/30">
+                <ProductSlider
+                    title="Top Products"
+                />
+            </div>
         </div>
     );
 }

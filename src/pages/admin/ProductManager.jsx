@@ -80,9 +80,7 @@ export default function ProductManager() {
     };
 
     const toggleUnit = (unit) => {
-        setSelectedUnits(prev =>
-            prev.includes(unit) ? prev.filter(u => u !== unit) : [...prev, unit]
-        );
+        setSelectedUnits([unit]);
     };
 
     const handleSave = async (e) => {
@@ -101,13 +99,12 @@ export default function ProductManager() {
             let uploadedUrls = [...existingImages];
 
             if (imageFiles.length > 0) {
-                const uploads = imageFiles.map(async (file) => {
-                    const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
-                    const snap = await uploadBytes(storageRef, file);
-                    return getDownloadURL(snap.ref);
-                });
-                const newUrls = await Promise.all(uploads);
-                uploadedUrls = [...uploadedUrls, ...newUrls];
+                // If there's a new image, it replaces all existing ones
+                const file = imageFiles[0];
+                const storageRef = ref(storage, `products/${Date.now()}_${file.name}`);
+                const snap = await uploadBytes(storageRef, file);
+                const newUrl = await getDownloadURL(snap.ref);
+                uploadedUrls = [newUrl];
             }
 
             const data = {
@@ -408,12 +405,12 @@ export default function ProductManager() {
                                         ))}
                                     </div>
                                 )}
-                                <input type="file" accept="image/*" multiple onChange={e => setImageFiles(Array.from(e.target.files))} className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700" />
+                                <input type="file" accept="image/*" onChange={e => setImageFiles(Array.from(e.target.files))} className="text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-emerald-50 file:text-emerald-700" />
                             </div>
                             <div className="flex gap-3 pt-2">
                                 <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancel</button>
                                 <button type="submit" disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
-                                    {saving ? 'Saving...' : 'Save'}
+                                    {saving ? 'Saving...' : (editId ? 'Update' : 'Save')}
                                 </button>
                             </div>
                         </form>

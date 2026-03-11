@@ -145,18 +145,48 @@ export default function HeroManager() {
                 </div>
                 <form onSubmit={handleSave} className="p-6 space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="input-field" placeholder="Welcome to ExportsHub" />
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="block text-sm font-medium text-gray-700">Title</label>
+                            <span className={`text-[11px] font-bold tracking-wider ${title.length >= 60 ? 'text-red-500' : 'text-emerald-600'}`}>
+                                {title.length} / 60 CHARS
+                            </span>
+                        </div>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={e => {
+                                const val = e.target.value;
+                                setTitle(val.charAt(0).toUpperCase() + val.slice(1));
+                            }}
+                            maxLength={60}
+                            className="input-field"
+                            placeholder="e.g. Welcome to ExportsHub"
+                        />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
-                        <textarea value={subtitle} onChange={e => setSubtitle(e.target.value)} className="input-field" rows={3} placeholder="Discover premium export products..." />
+                        <div className="flex justify-between items-center mb-2">
+                            <label className="block text-sm font-medium text-gray-700">Subtitle</label>
+                            <span className={`text-[11px] font-bold tracking-wider ${subtitle.length >= 120 ? 'text-red-500' : 'text-emerald-600'}`}>
+                                {subtitle.length} / 120 CHARS
+                            </span>
+                        </div>
+                        <textarea
+                            value={subtitle}
+                            onChange={e => {
+                                const val = e.target.value;
+                                setSubtitle(val.charAt(0).toUpperCase() + val.slice(1));
+                            }}
+                            maxLength={120}
+                            className="input-field"
+                            rows={3}
+                            placeholder="e.g. Discover premium export products across categories..."
+                        />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-4 flex items-center justify-between">
-                            <span>Background Slider Images</span>
+                            <span>Background Slider Images <span className="text-red-500 text-lg">*</span></span>
                             <span className="text-[11px] text-emerald-600 italic font-medium animate-pulse">
                                 * Note: Save your changes to apply all updates to the landing page slider.
                             </span>
