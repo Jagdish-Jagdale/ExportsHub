@@ -71,7 +71,7 @@ export default function ProductDetail() {
             </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Image */}
+                {/* Images */}
                 <div>
                     <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4 relative">
                         <ImageWithFallback
