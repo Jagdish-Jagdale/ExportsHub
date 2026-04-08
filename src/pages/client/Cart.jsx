@@ -62,7 +62,7 @@ export default function Cart() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 py-12">
             <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-                {/* Cart Items - Left Column */}
+                {/* Cart Items - Left Columns */}
                 <div className="flex-1 w-full lg:pr-6">
                     <style>{`
                         .custom-scrollbar::-webkit-scrollbar {
