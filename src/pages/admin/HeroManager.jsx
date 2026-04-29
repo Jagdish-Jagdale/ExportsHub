@@ -11,7 +11,7 @@ import ImageWithFallback from '../../components/common/ImageWithFallback';
 export default function HeroManager() {
     const [title, setTitle] = useState('');
     const [subtitle, setSubtitle] = useState('');
-    const [imageUrls, setImageUrls] = useState([]); // Now an arrays
+    const [imageUrls, setImageUrls] = useState([]); // Now an array
     const [imageFiles, setImageFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
