@@ -17,7 +17,7 @@ export default function HeroManager() {
     const [saving, setSaving] = useState(false);
     const [deletedUrls, setDeletedUrls] = useState([]); // Track existing URLs to delete from storage on save
 
-    // Delete Confirmation States
+    // Delete Confirmation State
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteConfig, setDeleteConfig] = useState(null); // { type: 'existing' | 'new', index: number }
 
