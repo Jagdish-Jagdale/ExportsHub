@@ -8,7 +8,7 @@ import { PageLoader } from './components/common/Loader';
 import ClientLayout from './components/layout/ClientLayout';
 import AdminLayout from './components/layout/AdminLayout';
 
-// Client pages - lazy loadedd
+// Client pages - lazy loaded
 const Home = lazy(() => import('./pages/client/Home'));
 const Categories = lazy(() => import('./pages/client/Categories'));
 const Products = lazy(() => import('./pages/client/Products'));
