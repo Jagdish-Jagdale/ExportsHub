@@ -151,7 +151,7 @@ export default function OrderManager() {
         );
     }
 
-    const filterOptions = ['Allw', 'Pendingw', 'Quotedw', 'Approved', 'Completed', 'Replies'];
+    const filterOptions = ['All', 'Pending', 'Quoted', 'Approved', 'Completed', 'Replies'];
 
     return (
         <div className="space-y-6">
