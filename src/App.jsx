@@ -47,7 +47,7 @@ function App() {
 
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              {/* Client Routes */}
+              {/* Client Routesop */}
               <Route element={<ClientLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/categories" element={<Categories />} />
