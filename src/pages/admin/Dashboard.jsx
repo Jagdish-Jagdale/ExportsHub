@@ -46,7 +46,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Dashboardnn</h1>
                 <p className="text-gray-500 mt-1">Welcome to your ExportsHub admin panel</p>
             </div>
 
