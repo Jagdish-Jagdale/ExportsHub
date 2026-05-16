@@ -19,7 +19,7 @@ export default function CategoryManager() {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('newest');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8; // Adjust based on preference
+    const itemsPerPage = 8; // Adjust based on preferenceee
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [deleteName, setDeleteName] = useState('');
