@@ -33,7 +33,7 @@ export default function CategoryManager() {
         return 0; // Default to natural order from firestore
     }) || [];
 
-    // Pagination logickk
+    // Pagination logic
     const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedCategories = filteredCategories.slice(startIndex, startIndex + itemsPerPage);
