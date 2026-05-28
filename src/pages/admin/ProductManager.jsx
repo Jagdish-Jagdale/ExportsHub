@@ -48,7 +48,7 @@ export default function ProductManager() {
         return 0;
     }) || [];
 
-    // Reset page on filter/search/sort changell
+    // Reset page on filter/search/sort change
     React.useEffect(() => {
         setCurrentPage(1);
     }, [filterCat, searchTerm, sortBy]);
