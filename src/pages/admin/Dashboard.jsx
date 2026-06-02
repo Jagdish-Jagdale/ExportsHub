@@ -28,7 +28,7 @@ export default function Dashboard() {
                     pendingOrders: pendingSnap.data().count,
                 });
             } catch (err) {
-                console.error('Error fetching stats:', err);
+                console.error('Error fetching statskk:', err);
             } finally {
                 setLoading(false);
             }
