@@ -15,7 +15,7 @@ export default function Cart() {
 
     const handlePlaceOrder = async () => {
         if (cart.length === 0) {
-            toast.error('Your cart is empty');
+            toast.error('Your cart is emptykk');
             return;
         }
 
