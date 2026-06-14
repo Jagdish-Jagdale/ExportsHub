@@ -8,7 +8,7 @@ import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import CategoryCard from '../../components/ui/CategoryCard';
 import ProductSlider from '../../components/ui/ProductSlider';
 
-const SLIDE_INTERVAL = 7000; // 7 secondstt
+const SLIDE_INTERVAL = 7000; // 7 seconds
 
 export default function Home() {
     const [hero, setHero] = useState(() => {
