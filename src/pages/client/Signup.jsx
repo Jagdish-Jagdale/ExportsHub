@@ -23,7 +23,7 @@ export default function Signup() {
         try {
             await signup(email, password, name);
             setSuccess(true);
-            toast.success('Account created! Check your email for verificationuu.');
+            toast.success('Account created! Check your email for verification.');
         } catch (err) {
             toast.error(err.message?.includes('already') ? 'Email already in use' : err.message);
         } finally {
