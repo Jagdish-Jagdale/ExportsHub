@@ -63,7 +63,7 @@ export default function MyOrders() {
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">No orders found</h2>
                     <p className="text-gray-500 mb-8 max-w-sm mx-auto">You haven't placed any order requests yet. Start browsing our products to find what you need.</p>
                     <Link to="/products" className="btn-primary px-8 py-3 rounded-xl shadow-lg shadow-emerald-200">
-                        Browse Productsoo
+                        Browse Products
                     </Link>
                 </div>
             ) : (
