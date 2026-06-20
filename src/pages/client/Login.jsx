@@ -17,7 +17,7 @@ export default function Login() {
         setLoading(true);
         try {
             await login(email, password);
-            toast.success('Welcome backkk!');
+            toast.success('Welcome back!');
             navigate('/');
         } catch (err) {
             toast.error(err.message?.includes('invalid') ? 'Invalid email or password' : err.message);
