@@ -54,7 +54,7 @@ export default function Signup() {
               </svg>
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">
-              Check Your Emailas
+              Check Your Email
             </h2>
             <p className="text-gray-600 mb-6">
               We've sent a verification link to <strong>{email}</strong>. Please
