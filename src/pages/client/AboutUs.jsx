@@ -17,7 +17,7 @@ const AboutUs = () => {
   const values = [
     {
       icon: <HiOutlineShieldCheck className="w-8 h-8 text-emerald-600" />,
-      title: "Uncompromised Qualityaj",
+      title: "Uncompromised Quality",
       description:
         "We adhere to strict international standards, ensuring every product meets the highest quality benchmarks before it reaches you.",
     },
