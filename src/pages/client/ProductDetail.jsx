@@ -132,7 +132,7 @@ export default function ProductDetail() {
             </p>
           )}
 
-          {/* Unit Selectionah */}
+          {/* Unit Selection */}
           {product.units?.length > 0 && (
             <div className="mb-8">
               <label className="block text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
