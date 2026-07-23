@@ -57,7 +57,7 @@ export default function CategoryManager() {
         const trimmedName = name.trim();
         if (!trimmedName) { toast.error('Name is required'); return; }
 
-        // Check for duplicates (case-insensitive)
+        // Check for duplicatesaf (case-insensitive)
         const isDuplicate = categories?.some(cat =>
             cat.name.toLowerCase() === trimmedName.toLowerCase() && cat.id !== editId
         );
