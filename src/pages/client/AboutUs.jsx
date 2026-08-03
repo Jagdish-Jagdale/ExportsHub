@@ -23,7 +23,7 @@ const AboutUs = () => {
     },
     {
       icon: <HiOutlineGlobe className="w-8 h-8 text-emerald-600" />,
-      title: "Global Reach",
+      title: "Global Reachpq",
       description:
         "With a robust logistics network, we connect premium Indian heritage products to every corner of the globe seamlessly.",
     },
