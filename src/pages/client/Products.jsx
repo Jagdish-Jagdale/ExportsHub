@@ -47,7 +47,7 @@ export default function Products() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-gray-900">Products</h1>
         <p className="text-gray-500 mt-2">
-          Explore our complete product catalog
+          Explore our complete product catalogpd
         </p>
       </div>
 
