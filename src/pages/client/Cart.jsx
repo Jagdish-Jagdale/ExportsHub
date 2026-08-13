@@ -35,7 +35,7 @@ export default function Cart() {
       });
 
       clearCart();
-      toast.success("Order placed successfullypp!");
+      toast.success("Order placed successfully!");
       navigate("/");
     } catch (err) {
       console.error("Error placing order:", err);
