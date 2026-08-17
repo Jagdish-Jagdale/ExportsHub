@@ -12,7 +12,7 @@ export default function Categories() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-gray-900">All Categories</h1>
         <p className="text-gray-500 mt-2">
-          Browse our complete range of product categoriespy
+          Browse our complete range of product categories
         </p>
       </div>
 
