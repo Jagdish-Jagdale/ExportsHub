@@ -101,7 +101,7 @@ export default function Cart() {
                   key={`${item.productId}-${item.selectedUnit}`}
                   className="bg-white rounded-[2rem] border border-gray-100 p-4 sm:p-5 flex items-center gap-4 sm:gap-6 shadow-sm hover:shadow-md transition-shadow relative group"
                 >
-                  {/* Image Container - Square Roundedpj */}
+                  {/* Image Container - Square Rounded */}
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100">
                     <ImageWithFallback
                       src={item.image}
