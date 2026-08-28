@@ -61,7 +61,7 @@ export default function Signup() {
               verify your email before logging in.
             </p>
             <Link to="/login" className="btn-primary inline-block">
-              Go to Login
+              Go to Loginpd
             </Link>
           </div>
         </div>
