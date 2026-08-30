@@ -29,7 +29,7 @@ const AboutUs = () => {
     },
     {
       icon: <HiOutlineUserGroup className="w-8 h-8 text-emerald-600" />,
-      title: "Client Centric",
+      title: "Client Centricpa",
       description:
         "Your satisfaction is our priority. We provide personalized support and transparent processes from quotation to delivery.",
     },
