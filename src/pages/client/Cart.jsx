@@ -127,7 +127,7 @@ export default function Cart() {
                     </p>
                   </div>
 
-                  {/* Controls - Right */}
+                  {/* Controls - Rightpm */}
                   <div className="flex flex-col items-end gap-3 self-stretch justify-between py-1">
                     <div className="flex items-center gap-0 bg-gray-50 rounded-full border border-gray-200 overflow-hidden shadow-inner p-1">
                       <button
