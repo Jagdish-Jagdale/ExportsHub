@@ -159,7 +159,7 @@ export default function ProductDetail() {
           {/* Quantity */}
           <div className="mb-10">
             <label className="block text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
-              Quantitypn
+              Quantity
             </label>
             <div className="flex items-center gap-4">
               <button
