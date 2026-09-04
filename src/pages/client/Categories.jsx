@@ -20,9 +20,7 @@ export default function Categories() {
         <Loader className="py-20" />
       ) : categories.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-gray-500 text-lg">
-            No categories available yetpc.
-          </p>
+          <p className="text-gray-500 text-lg">No categories available yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
