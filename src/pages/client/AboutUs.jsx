@@ -124,7 +124,7 @@ const AboutUs = () => {
         </div>
       </div>
 
-      {/* Mission Sectionpz */}
+      {/* Mission Section */}
       <div className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-emerald-900 rounded-[3rem] p-12 lg:p-20 relative overflow-hidden text-white">
